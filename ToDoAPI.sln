@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30709.64
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDoAPI", "ToDoAPI\ToDoAPI.csproj", "{968E5FC8-0332-4190-9525-FB7CF8146D96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp", "WebApp\WebApp.csproj", "{B77B8256-265B-4F08-B5FC-C2F443E98B8B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{968E5FC8-0332-4190-9525-FB7CF8146D96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{968E5FC8-0332-4190-9525-FB7CF8146D96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{968E5FC8-0332-4190-9525-FB7CF8146D96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{968E5FC8-0332-4190-9525-FB7CF8146D96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B77B8256-265B-4F08-B5FC-C2F443E98B8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B77B8256-265B-4F08-B5FC-C2F443E98B8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B77B8256-265B-4F08-B5FC-C2F443E98B8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B77B8256-265B-4F08-B5FC-C2F443E98B8B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0755A255-C603-4761-8AB0-9D8186DE8B1E}
+	EndGlobalSection
+EndGlobal
