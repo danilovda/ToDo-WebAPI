@@ -22,6 +22,10 @@ namespace ToDoAPI.Controllers
         }
 
         // GET: api/TodoItems
+        /// <summary>
+        /// Gets the TodoItem list
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
         {
@@ -29,6 +33,11 @@ namespace ToDoAPI.Controllers
         }
 
         // GET: api/TodoItems/5
+        /// <summary>
+        /// Gets a specific TodoItem
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<TodoItem>> GetTodoItem(long id)
         {
@@ -44,6 +53,12 @@ namespace ToDoAPI.Controllers
 
         // PUT: api/TodoItems/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Updates a specific TodoItem
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="todoItem"></param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTodoItem(long id, TodoItem todoItem)
         {

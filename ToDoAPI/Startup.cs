@@ -56,8 +56,19 @@ namespace ToDoAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ToDo_WebAPI-v1"));
+                app.UseSwagger(c=>
+                    //c.RouteTemplate = "api-docs/{documentName}/swagger.json"
+                    c.RouteTemplate = "docs/swagger/{documentname}/swagger.json"
+                );
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/docs/swagger/v1/swagger.json", "My Cool API V1");
+                    c.RoutePrefix = "docs/swagger";
+                    //c.SwaggerEndpoint("/swagger/v1/swagger.json", "ToDo_WebAPI-v1");
+                    //c.RoutePrefix = "docs";
+                }
+                );
+                //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/ToDo.json", "ToDo_WebAPI-v1"));
             }
 
             app.UseHttpsRedirection();
