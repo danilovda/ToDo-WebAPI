@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace ToDoAPI.Models
 {
-    
     public class TodoItem
     {
         

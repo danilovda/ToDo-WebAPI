@@ -1,0 +1,18 @@
+﻿@model TodoItem
+
+<div>
+    @if (Model != null)
+    {
+        <p>Delete an entry <b>@Model.Name</b>?</p>
+        
+    }
+    else
+    {
+        <p>Model is  null</p>
+    }
+</div>
+
+<form method="post">
+    <a asp-area="" asp-controller="Home" asp-action="List" class="btn btn-outline-secondary">back to list</a>
+    <button type="submit" class="btn btn-outline-danger">delete</button>
+</form>

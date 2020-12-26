@@ -17,50 +17,181 @@ namespace WebApp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IConfiguration _Configure;
-        private readonly string apiBaseUrl;
-
-        //public HomeController(ILogger<HomeController> logger, IConfiguration configuration)
+        private readonly string apiBaseUrl = "https://localhost:44398/api/TodoItems/";
+        
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
             //apiBaseUrl = _Configure.GetValue<string>("WebAPIBaseUrl");
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> List() 
+        {
+            return await GetItems();
+        }
+
+        private async Task<IActionResult> GetItems()
         {
             using (HttpClient client = new HttpClient())
             {
-                //StringContent content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
-                //StringContent content = "";//new StringContent("", Encoding.UTF8, "application/json");
                 //string endpoint = apiBaseUrl + "/TodoItems/1";
-                string endpoint = "https://localhost:44398/api/TodoItems/1";
+                string endpoint = apiBaseUrl;
 
-                
-                //using (var Response = await client.PostAsync(endpoint, content))
                 using (var Response = await client.GetAsync(endpoint, HttpCompletionOption.ResponseHeadersRead))
                 {
                     if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
-                        //TempData["Profile"] = JsonConvert.SerializeObject(user);
-                        
                         var data = await Response.Content.ReadAsStringAsync();
-                        var j = JsonConvert.DeserializeObject<TodoItem>(data);
-                        return RedirectToAction("Profile");
+                        var j = JsonConvert.DeserializeObject<IEnumerable<TodoItem>>(data);
 
+                        return View(j);                        
                     }
                     else
                     {
                         ModelState.Clear();
                         ModelState.AddModelError(string.Empty, "Username or Password is Incorrect");
                         return View();
-
                     }
-
                 }
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> List(TodoItem todoItem)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                //string endpoint = apiBaseUrl + "/TodoItems/1";
+                string endpoint = apiBaseUrl;
+
+                using (var Response = await client.PostAsync(endpoint, CreateHttpContent<TodoItem>(todoItem)))
+                {
+                    if (Response.StatusCode == System.Net.HttpStatusCode.Created)
+                    {
+                        return await GetItems();
+                    }
+                    else
+                    {
+                        ModelState.Clear();
+                        ModelState.AddModelError(string.Empty, "Username or Password is Incorrect");
+                        return View();
+                    }
+                }
+            }
+        }
+
+        private HttpContent CreateHttpContent<T>(T content)
+        {
+            var json = JsonConvert.SerializeObject(content, MicrosoftDateFormatSettings);
+            return new StringContent(json, Encoding.UTF8, "application/json");
+        }
+
+        private static JsonSerializerSettings MicrosoftDateFormatSettings
+        {
+            get
+            {
+                return new JsonSerializerSettings
+                {
+                    DateFormatHandling = DateFormatHandling.MicrosoftDateFormat
+                };
+            }
+        }
+
+        public async Task<IActionResult> Item(int id)
+        {
+            return await GetItem(id);
+        }
+
+        private async Task<IActionResult> GetItem(int id)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                //string endpoint = apiBaseUrl + "/TodoItems/1";
+                string endpoint = apiBaseUrl + id;
+
+                using (var Response = await client.GetAsync(endpoint, HttpCompletionOption.ResponseHeadersRead))
+                {
+                    if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var data = await Response.Content.ReadAsStringAsync();
+                        var j = JsonConvert.DeserializeObject<TodoItem>(data);
+
+                        return View(j);
+                    }
+                    else
+                    {
+                        ModelState.Clear();
+                        ModelState.AddModelError(string.Empty, "Username or Password is Incorrect");
+                        return View();
+                    }
+                }
+            }
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            return await GetItem(id);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(TodoItem todoItem)
+        {
+            using (HttpClient client = new HttpClient())
+            {                
+                string endpoint = apiBaseUrl + todoItem.Id;
                 
-            //return View();
+                using (var Response = await client.PutAsync(endpoint, CreateHttpContent<TodoItem>(todoItem)))
+                {
+                    if (Response.StatusCode == System.Net.HttpStatusCode.NoContent)
+                    {
+                        return Redirect("~/Home/List");
+                    }
+                    else
+                    {
+                        ModelState.Clear();
+                        ModelState.AddModelError(string.Empty, "Username or Password is Incorrect");
+                        return View();
+                    }
+                }
+            }
+        }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            return await GetItem(id);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            //return await GetItem(id);
+
+            using (HttpClient client = new HttpClient())
+            {
+                string endpoint = apiBaseUrl + id;
+
+                //using (var Response = await client.PostAsync(endpoint, CreateHttpContent<TodoItem>(todoItem)))
+                using (var Response = await client.DeleteAsync(endpoint))
+                {
+                    //if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                    if (Response.StatusCode == System.Net.HttpStatusCode.NoContent)
+                    {
+                        return Redirect("~/Home/List");
+                        //return await GetItems();
+                    }
+                    else
+                    {
+                        ModelState.Clear();
+                        ModelState.AddModelError(string.Empty, "Username or Password is Incorrect");
+                        return View();
+                    }
+                }
+            }
         }
 
         public IActionResult Privacy()
@@ -75,3 +206,4 @@ namespace WebApp.Controllers
         }
     }
 }
+

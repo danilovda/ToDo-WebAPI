@@ -1,0 +1,14 @@
+﻿@model TodoItem
+
+<div>
+    @if (Model != null)
+    {
+        <p>@Model.Name</p>
+    }
+    else
+    {
+        <p>Model is  null</p>
+    }
+</div>
+
+<a asp-area="" asp-controller="Home" asp-action="List">back to list</a>

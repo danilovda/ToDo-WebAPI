@@ -1,0 +1,36 @@
+﻿@model IEnumerable<TodoItem>
+
+<form method="post">
+    <div class="input-group mb-3">
+        <input type="text" name="Name" class="form-control" placeholder="to do" aria-label="to do+++" aria-describedby="button-addon2">
+        <button type="submit" class="btn btn-outline-secondary" id="button-addon2">Add</button>
+    </div>
+</form>
+
+
+<table class="table mt-2">
+    @foreach (var item in Model)
+    {
+        var isChecked = (item.IsComplete == true ? "checked" : "");
+        <tr>
+            @*<td>@item.IsComplete</td>*@
+            <td>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" @isChecked>
+                    <label class="form-check-label" for="flexCheckDefault">
+                        @item.Name
+                    </label>
+                </div>
+            </td>
+            <td>
+                <a asp-area="" asp-controller="Home" asp-action="Edit" asp-route-id="@item.Id">edit</a>
+            </td>
+            <td>
+                <a asp-area="" asp-controller="Home" asp-action="Item" asp-route-id="@item.Id">details</a>
+            </td>
+            <td>
+                <a asp-area="" asp-controller="Home" asp-action="Delete" asp-route-id="@item.Id">delete</a>
+            </td>
+        </tr>
+    }
+</table>
