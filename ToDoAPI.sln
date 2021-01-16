@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToDo_WebAPI", "ToDoAPI\ToDo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCoreMVC", "WebApp\AspNetCoreMVC.csproj", "{B77B8256-265B-4F08-B5FC-C2F443E98B8B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetCoreJS", "AspNetCoreJS\AspNetCoreJS.csproj", "{9A5786CB-4AA1-42E7-8F51-469FC794BA0C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{B77B8256-265B-4F08-B5FC-C2F443E98B8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B77B8256-265B-4F08-B5FC-C2F443E98B8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B77B8256-265B-4F08-B5FC-C2F443E98B8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A5786CB-4AA1-42E7-8F51-469FC794BA0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A5786CB-4AA1-42E7-8F51-469FC794BA0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A5786CB-4AA1-42E7-8F51-469FC794BA0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A5786CB-4AA1-42E7-8F51-469FC794BA0C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
