@@ -33,6 +33,8 @@ namespace ToDoAPI
             services.AddDbContext<TodoContext>(opt =>
                                                opt.UseInMemoryDatabase("TodoList"));
             services.AddControllers();
+            services.AddCors(); // добавляем сервисы CORS            
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -56,6 +58,12 @@ namespace ToDoAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                // подключаем CORS
+                //app.UseCors(builder => builder.AllowAnyOrigin());
+                app.UseCors(builder => builder.WithOrigins("https://localhost:44301", "https://localhost:44355")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod());
+
                 app.UseSwagger(c=>
                     //c.RouteTemplate = "api-docs/{documentName}/swagger.json"
                     c.RouteTemplate = "docs/swagger/{documentname}/swagger.json"
