@@ -1,0 +1,247 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Список пользователей</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.0/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <main role="main" class="pb-3">
+            <form method="post" name="userForm">
+                <div class="input-group mb-3 mt-3">
+                    <input type="text" name="name" id="name" class="form-control" placeholder="to do" aria-label="to do+++" aria-describedby="button-addon2">
+                    <button type="submit" class="btn btn-outline-secondary ml-1" id="button-addon2">Add</button>
+                </div>
+            </form>
+
+            <div id="errors" class="alert alert-danger" style="display:none;"></div>
+
+            <table class="table mt-2">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Имя</th>
+                        <th>isComplete</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+        </main>
+    </div>
+
+    <script>
+        const apiBaseUrl = "https://localhost:44398/api/TodoItems/";
+
+        // Получение всех пользователей
+        async function GetTodoList() {
+            // отправляет запрос и получаем ответ
+            const response = await fetch(apiBaseUrl, {
+                method: "GET",
+                headers: { "Accept": "application/json" }
+            });
+            console.log('response=', response);
+            // если запрос прошел нормально
+            if (response.ok === true) {
+                // получаем данные
+                const todoList = await response.json();
+                console.log(todoList);
+
+                let rows = document.querySelector("tbody");
+                todoList.forEach(user => {
+                    // добавляем полученные элементы в таблицу
+                    rows.append(row(user));
+                });
+            }
+            else {
+                console.log('MyError');
+            }
+        }
+
+        // Получение одного пользователя
+        async function GetToDo(id) {
+            const response = await fetch(apiBaseUrl + id, {
+                method: "GET",
+                headers: { "Accept": "application/json" }
+            });
+            if (response.ok === true) {
+                const todo = await response.json();                
+                return todo;
+                //const form = document.forms["userForm"];
+                //form.elements["id"].value = todo.id;
+                //form.elements["name"].value = todo.name;
+                //form.elements["age"].value = todo.age;
+            }
+
+            return null;
+        }
+        // Добавление пользователя
+        async function CreateToDo(toDo, isComplete) {
+
+            const response = await fetch(apiBaseUrl, {
+                method: "POST",
+                headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: toDo,
+                    isComplete: isComplete
+                })
+            });
+            //console.log("response=", response);
+            if (response.ok === true) {
+                const user = await response.json();
+                //console.log("user=", user);
+                reset();
+                document.querySelector("tbody").append(row(user));
+            }
+            else {
+                const errorData = await response.json();
+                console.log("errors", errorData);
+                if (errorData) {
+                    // ошибки вследствие валидации по атрибутам
+                    if (errorData.errors) {
+                        if (errorData.errors["Name"]) {
+                            addError(errorData.errors["Name"]);
+                        }                        
+                    }
+                    // кастомные ошибки, определенные в контроллере
+                    // добавляем ошибки свойства Name
+                    if (errorData["Name"]) {
+                        addError(errorData["Name"]);
+                    }                    
+                }
+                console.log("errors", errorData);
+
+                document.getElementById("errors").style.display = "block";
+            }
+        }
+        // Изменение пользователя
+        async function EditToDo(todoId, todoName, todoIs) {
+        
+            const response = await fetch(apiBaseUrl + todoId, {
+                method: "PUT",
+                headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    id: todoId,
+                    name: todoName,
+                    isComplete: !todoIs
+                })
+            });            
+
+            if (response.ok === true) {
+                //const user = await response.json();
+                //reset();
+                let todo = GetToDo(todoId);
+                todo.then((value) => {
+                    document.querySelector("tr[data-rowid='" + todoId + "']").replaceWith(row(value));
+                });
+            }
+        }
+        // Удаление пользователя
+        async function DeleteToDo(id) {
+            const response = await fetch(apiBaseUrl + id, {
+                method: "DELETE",
+                headers: { "Accept": "application/json" }
+            });            
+            if (response.ok === true) {
+                //const user = await response.json();                
+                //document.querySelector("tr[data-rowid='" + user.id + "']").remove();
+                document.querySelector("tr[data-rowid='" + id + "']").remove();
+            }
+        }
+
+        // сброс формы
+        function reset() {
+            const form = document.forms["userForm"];
+            form.reset();
+            //form.elements["id"].value = 0;
+        }
+        // создание строки для таблицы
+        function row(todo) {
+
+            const tr = document.createElement("tr");
+            tr.setAttribute("data-rowid", todo.id);
+
+            const idTd = document.createElement("td");
+            idTd.append(todo.id);
+            tr.append(idTd);
+
+            const nameTd = document.createElement("td");
+            nameTd.append(todo.name);
+            tr.append(nameTd);
+
+            const ageTd = document.createElement("td");
+            ageTd.append(todo.isComplete);
+            tr.append(ageTd);
+
+            const linksTd = document.createElement("td");
+
+            const editLink = document.createElement("a");
+            editLink.setAttribute("data-id", todo.id);
+            editLink.setAttribute("style", "cursor:pointer;padding:15px;");
+            //editLink.classList.add("btn");
+            //editLink.classList.add("btn-outline-secondary");
+            editLink.append("Изменить");
+            editLink.addEventListener("click", e => {
+
+                e.preventDefault();
+                let id = e.target.getAttribute("data-id");
+                let todo = GetToDo(id);
+                todo.then((value) => {                    
+                    EditToDo(value.id, value.name, value.isComplete);
+                });
+                
+            });
+            linksTd.append(editLink);
+
+            const removeLink = document.createElement("a");
+            removeLink.setAttribute("data-id", todo.id);
+            removeLink.setAttribute("style", "cursor:pointer;padding:15px;");
+            removeLink.append("Удалить");
+            removeLink.addEventListener("click", e => {
+
+                e.preventDefault();                
+                DeleteToDo(todo.id);
+            });
+
+            linksTd.append(removeLink);
+            tr.appendChild(linksTd);
+
+            return tr;
+        }   
+        function addError(errors) {
+            errors.forEach(error => {
+                const p = document.createElement("p");
+                p.append(error);
+                document.getElementById("errors").append(p);
+            });
+        }
+
+        // отправка формы
+        document.forms["userForm"].addEventListener("submit", e => {
+            e.preventDefault();
+            const form = document.forms["userForm"];
+            //const id = form.elements["id"].value;
+            const name = form.elements["name"].value;            
+            const isComplete = false;
+            //if (id == 0)
+            CreateToDo(name, isComplete);
+            //else
+            //    EditToDo(id, name, age);
+        });
+        
+        document.getElementById("name").addEventListener('keypress', (event) => {
+            
+            document.getElementById("errors").innerHTML = "";
+            document.getElementById("errors").style.display = "none";
+        });
+
+        // загрузка пользователей
+        GetTodoList();
+
+    </script>
+</body>
+</html>

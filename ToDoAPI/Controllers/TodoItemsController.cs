@@ -113,6 +113,14 @@ namespace ToDoAPI.Controllers
         //[ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
         {
+            // обработка частных случаев валидации
+            if (todoItem.Name.Length <= 3)
+                ModelState.AddModelError("Name", "Текст ToDo должен быть больше 3 смволов");
+
+            // если есть лшибки - возвращаем ошибку 400
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             _context.TodoItems.Add(todoItem);
             await _context.SaveChangesAsync();
 
